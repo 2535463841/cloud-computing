@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: keystone
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: keystone
+    spec:
+      hostNetwork: True
+      nodeSelector:
+          nodeType: controller
+      containers:
+        - name: keystone
+          image: registry:5000/ec/keystone
+          ports:
+          - containerPort: 5000
+          - containerPort: 35357
+          volumeMounts:
+            - mountPath: /etc/hosts
+              name: etc-hosts
+            - mountPath: /etc/keystone
+              name: etc-keystone
+            - mountPath: /etc/httpd
+              name: etc-httpd
+            - mountPath: /var/log/keystone
+              name: var-log-keystone
+            - mountPath: /var/log/httpd
+              name: var-log-httpd
+      volumes:
+        - name: etc-hosts
+          hostPath:
+            path: /etc/hosts
+        - name: etc-keystone
+          hostPath:
+            path: /etc/keystone
+        - name: etc-httpd
+          hostPath:
+            path: /etc/httpd
+        - name: var-log-keystone
+          hostPath:
+            path: /var/log/keystone
+        - name: var-log-httpd
+          hostPath:
+            path: /var/log/httpd

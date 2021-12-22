@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mariadb
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      hostNetwork: True
+      nodeSelector:
+          nodeType: controller
+      containers:
+        - name: mariadb
+          image: registry:5000/mariadb:saved
+          ports:
+          - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-data
+            - mountPath: /var/log/mariadb
+              name: mysql-log
+      volumes:
+        - name: mysql-data
+          hostPath:
+            path: /home/share/var/lib/mysql
+        - name: mysql-log
+          hostPath:
+            path: /var/log/mariadb

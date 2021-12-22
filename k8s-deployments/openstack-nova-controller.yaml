@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nova-controller
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nova-controller
+    spec:
+      hostNetwork: True
+      nodeSelector:
+          nodeType: controller
+      containers:
+        - name: nova-api
+          image: registry:5000/ec/nova-api
+          ports:
+          - containerPort: 8774
+          volumeMounts:
+            - mountPath: /etc/hosts
+              name: etc-hosts
+            - mountPath: /etc/nova
+              name: etc-nova
+            - mountPath: /var/log/nova
+              name: var-log-nova
+        - name: nova-conductor
+          image: registry:5000/ec/nova-conductor
+          volumeMounts:
+            - mountPath: /etc/hosts
+              name: etc-hosts
+            - mountPath: /etc/nova
+              name: etc-nova
+            - mountPath: /var/log/nova
+              name: var-log-nova
+        - name: nova-scheduler
+          image: registry:5000/ec/nova-scheduler
+          volumeMounts:
+            - mountPath: /etc/hosts
+              name: etc-hosts
+            - mountPath: /etc/nova
+              name: etc-nova
+            - mountPath: /var/log/nova
+              name: var-log-nova
+      volumes:
+        - name: etc-hosts
+          hostPath:
+            path: /etc/hosts
+        - name: etc-nova
+          hostPath:
+            path: /etc/nova
+        - name: var-log-nova
+          hostPath:
+            path: /var/log/nova

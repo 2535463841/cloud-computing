@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kubernetes-dashboard
+  namespace: kube-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: kubernetes-dashboard
+        version: latest
+        kubernetes.io/cluster-service: "true"
+    spec:
+      nodeSelector:
+          nodeType: controller
+      containers:
+        - name: kubernetes-dashboard
+          image: docker.io/bestwu/kubernetes-dashboard-amd64
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 100m
+              memory: 50Mi
+            requests:
+              cpu: 100m
+              memory: 50Mi
+          ports:
+            - containerPort: 9090
+          args:
+            - --apiserver-host=http://controller60:8080
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 9090
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          volumeMounts:
+            - mountPath: /etc/hosts
+              name: etc-hosts
+      volumes:
+        - name: etc-hosts
+          hostPath:
+            path: /etc/hosts

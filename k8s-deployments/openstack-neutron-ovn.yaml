@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: neutron-ovn
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: neutron-ovn
+    spec:
+      hostNetwork: True
+      nodeSelector:
+          nodeType: controller
+      containers:
+        - name: neutron-ovn
+          image: registry:5000/ec/neutron-ovn
+          ports:
+          - containerPort: 9696
+          volumeMounts:
+            - mountPath: /etc/hosts
+              name: etc-hosts
+            - mountPath: /etc/neutron
+              name: etc-neutron
+            - mountPath: /var/log/neutron
+              name: var-log-neutron
+      volumes:
+        - name: etc-hosts
+          hostPath:
+            path: /etc/hosts
+        - name: etc-neutron
+          hostPath:
+            path: /etc/neutron
+        - name: var-log-neutron
+          hostPath:
+            path: /var/log/neutron

@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: horizon
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: horizon
+    spec:
+      hostNetwork: False
+      nodeSelector:
+          nodeType: controller
+      containers:
+        - name: horizon
+          image: registry:5000/ec/horizon
+          ports:
+          - containerPort: 80
+            hostPort: 8888
+          args: [ "controller60" ]
+          volumeMounts:
+            - mountPath: /etc/hosts
+              name: etc-hosts
+      volumes:
+        - name: etc-hosts
+          hostPath:
+            path: /etc/hosts

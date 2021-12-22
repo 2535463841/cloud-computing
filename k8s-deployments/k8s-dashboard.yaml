@@ -28,7 +28,7 @@ spec:
           ports:
             - containerPort: 9090
           args:
-            - --apiserver-host=http://controller60:8080
+            - --apiserver-host=http://k8s-api-server:8080
           livenessProbe:
             httpGet:
               path: /

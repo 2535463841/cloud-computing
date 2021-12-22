@@ -14,7 +14,7 @@ spec:
           nodeType: controller
       containers:
         - name: mariadb
-          image: registry:5000/mariadb:saved
+          image: registry:5000/mariadb
           ports:
           - containerPort: 3306
           volumeMounts:
